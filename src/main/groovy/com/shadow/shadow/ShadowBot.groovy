@@ -23,7 +23,7 @@ class ShadowBot {
         receivedMessage = new ReceivedFacebookMessage(message)
     }
 
-    void verifyFacebookClientMessage(){
+    /*void verifyFacebookClientMessage(){
         String facebookClientMessage = receivedMessage.getReceivedMessage().toLowerCase()
         if(facebookClientMessage.contains("seu") || facebookClientMessage.contains("teu") && facebookClientMessage.contains("nome")){
             this.botMessage = "Opa, o meu nome é Shadow"
@@ -34,15 +34,17 @@ class ShadowBot {
         else{
             this.botMessage = "Desculpe, eu to aprendendo ainda as coisas e nao entendi sua mensagem"
         }
-    }
+    }  Recriar optimizado*/
+
 
     void sendMessage(){
         String url = "https://graph.facebook.com/v10.0/me/messages?access_token="+this.token
         HttpHeaders headers = new HttpHeaders()
-        SendingFacebookMessage message = new SendingFacebookMessage(receivedMessage.getIdSender(),this.botMessage)
         headers.setContentType(MediaType.APPLICATION_JSON)
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON))
-        HttpEntity entity = new HttpEntity<>(message.returnFacebookMessage(),headers)
+
+        FacebookResponse facebookResponse = new FacebookResponse("RESPONSE",new Recipient(receivedMessage.getIdSender()),new Message(botMessage))
+        HttpEntity entity = new HttpEntity<>(facebookResponse,headers)
         ResponseEntity<String> response = this.restTemplate.postForEntity(url, entity, String)
     }
 

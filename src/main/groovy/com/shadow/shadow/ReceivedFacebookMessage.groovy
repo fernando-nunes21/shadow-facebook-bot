@@ -1,7 +1,11 @@
 package com.shadow.shadow
 
 class ReceivedFacebookMessage {
-    String idSender
+
+
+
+
+    /*String idSender
     String receivedMessage
 
     ReceivedFacebookMessage(LinkedHashMap facebookMessage){
@@ -17,6 +21,6 @@ class ReceivedFacebookMessage {
 
     String getReceivedMessage(){
         return receivedMessage
-    }
+    }*/
 
 }
