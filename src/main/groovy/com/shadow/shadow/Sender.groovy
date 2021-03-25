@@ -1,9 +1,9 @@
 package com.shadow.shadow
 
-class Recipient {
+class Sender {
     private String id
 
-    Recipient() {
+    Sender() {
         this.id = id
     }
 

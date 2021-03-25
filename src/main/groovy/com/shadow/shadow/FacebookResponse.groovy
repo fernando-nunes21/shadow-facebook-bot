@@ -7,9 +7,9 @@ class FacebookResponse {
     @JsonProperty("messaging_type")
     private String messagingType
     private Recipient recipient
-    private Message message
+    private MessageToFacebook message
 
-    FacebookResponse(String messagingType, Recipient recipient, Message message) {
+    FacebookResponse(String messagingType, Recipient recipient, MessageToFacebook message) {
         this.messagingType = messagingType
         this.recipient = recipient
         this.message = message
@@ -23,8 +23,19 @@ class FacebookResponse {
         return recipient
     }
 
-    Message getMessage() {
+    MessageToFacebook getMessage() {
         return message
     }
 
+    void setMessagingType(String messagingType) {
+        this.messagingType = messagingType
+    }
+
+    void setRecipient(Recipient recipient) {
+        this.recipient = recipient
+    }
+
+    void setMessage(MessageToFacebook message) {
+        this.message = message
+    }
 }

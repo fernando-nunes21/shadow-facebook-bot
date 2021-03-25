@@ -1,9 +1,9 @@
 package com.shadow.shadow
 
-class Message {
+class MessageToFacebook {
     private String text
 
-    Message(String text) {
+    MessageToFacebook(String text) {
         this.text = text
     }
 

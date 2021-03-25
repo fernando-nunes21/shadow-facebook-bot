@@ -14,38 +14,52 @@ import org.springframework.http.MediaType
 class ShadowBot {
 
     @Value('${facebook.token}')
-    String token
-    String botMessage
-    RestTemplate restTemplate = new RestTemplate()
-    ReceivedFacebookMessage receivedMessage
+    private String token
+    private RestTemplate restTemplate = new RestTemplate()
 
-    void receivedClientMessage(LinkedHashMap message){
-        receivedMessage = new ReceivedFacebookMessage(message)
+    void receivedClientMessage(FacebookReceived message){
+        String botMessage = verifyFacebookClientMessage(message)
     }
 
-    /*void verifyFacebookClientMessage(){
-        String facebookClientMessage = receivedMessage.getReceivedMessage().toLowerCase()
-        if(facebookClientMessage.contains("seu") || facebookClientMessage.contains("teu") && facebookClientMessage.contains("nome")){
-            this.botMessage = "Opa, o meu nome é Shadow"
+     void verifyFacebookClientMessage(FacebookReceived message){
+        String facebookClientMessage = message.getEntry().get(0).getMessaging().get(0).getMessage().getText()
+        String botMessage
+        if(facebookClientMessage.contains("nome")){
+            if(facebookClientMessage.contains("seu") || facebookClientMessage.contains("teu")){
+                botMessage = "Opa, o meu nome é Shadow"
+            }
+            else{
+                botMessage = "Desculpe, eu to aprendendo ainda as coisas e nao entendi sua mensagem"
+            }
         }
         else if(facebookClientMessage.contains("sua") || facebookClientMessage.contains("tua") && facebookClientMessage.contains("idade")){
-            this.botMessage = "Eu tenho alguns dias de vida"
+            if(facebookClientMessage.contains("sua") || facebookClientMessage.contains("tua")){
+                botMessage = "Eu tenho alguns dias de vida"
+            }
+            else{
+                botMessage = "Desculpe, eu to aprendendo ainda as coisas e nao entendi sua mensagem"
+
+            }
         }
         else{
-            this.botMessage = "Desculpe, eu to aprendendo ainda as coisas e nao entendi sua mensagem"
+            botMessage = "Desculpe, eu to aprendendo ainda as coisas e nao entendi sua mensagem"
         }
-    }  Recriar optimizado*/
+        sendMessage(message, botMessage)
+    }
 
 
-    void sendMessage(){
-        String url = "https://graph.facebook.com/v10.0/me/messages?access_token="+this.token
+    void sendMessage(FacebookReceived receivedMessage, String botMessage){
+        String urlFacebook = "https://graph.facebook.com/v10.0/me/messages?access_token="+this.token
+        Recipient recipient = new Recipient()
+        recipient.setId(receivedMessage.getEntry().get(0).getMessaging().get(0).getSender().getId().toString())
+
         HttpHeaders headers = new HttpHeaders()
         headers.setContentType(MediaType.APPLICATION_JSON)
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON))
 
-        FacebookResponse facebookResponse = new FacebookResponse("RESPONSE",new Recipient(receivedMessage.getIdSender()),new Message(botMessage))
+        FacebookResponse facebookResponse = new FacebookResponse("RESPONSE",recipient,new MessageToFacebook(botMessage))
         HttpEntity entity = new HttpEntity<>(facebookResponse,headers)
-        ResponseEntity<String> response = this.restTemplate.postForEntity(url, entity, String)
+        ResponseEntity<String> response = this.restTemplate.postForEntity(urlFacebook, entity, String)
     }
 
 }

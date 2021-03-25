@@ -43,10 +43,9 @@ class ApplicationController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    ResponseEntity<String> postWebhook(@RequestBody LinkedHashMap facebookBody) {
+    ResponseEntity<String> postWebhook(@RequestBody FacebookReceived facebookBody) {
+        println (facebookBody)
         shadowBot.receivedClientMessage(facebookBody)
-        shadowBot.verifyFacebookClientMessage()
-        shadowBot.sendMessage()
         return new ResponseEntity<>(HttpStatus.OK)
     }
 
