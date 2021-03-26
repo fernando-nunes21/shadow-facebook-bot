@@ -1,28 +1,24 @@
 package com.shadow.shadow
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.databind.util.JSONPObject
-import org.springframework.beans.factory.annotation.Autowired
+import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-import javax.websocket.SendResult
-import javax.xml.ws.Response
 
+@Slf4j
 @RestController
 @RequestMapping(value="/webhook")
 class ApplicationController {
 
-    @Value('${facebook.token}')
-    String token;
-    ShadowBot shadowBot
+    @Value('${facebook.verify.url}')
+    private String token
+    private ShadowBot shadowBot
 
 
     ApplicationController(ShadowBot shadowBot) {
@@ -35,6 +31,7 @@ class ApplicationController {
                                              @RequestParam("hub.challenge") String facebookChallenge) {
 
         if (this.token == facebookToken && facebookMode == "subscribe") {
+            log.info("Verificado")
             return ResponseEntity.ok(facebookChallenge)
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED)
@@ -44,8 +41,8 @@ class ApplicationController {
 
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<String> postWebhook(@RequestBody FacebookReceived facebookBody) {
-        println (facebookBody)
-        shadowBot.receivedClientMessage(facebookBody)
+        log.info(facebookBody.toString())
+        shadowBot.verifyFacebookClientMessage(facebookBody)
         return new ResponseEntity<>(HttpStatus.OK)
     }
 

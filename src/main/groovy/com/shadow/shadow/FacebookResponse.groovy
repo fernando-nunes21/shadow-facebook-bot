@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty
 class FacebookResponse {
 
     @JsonProperty("messaging_type")
-    private String messagingType
+    private String messagingType = "RESPONSE"
     private Recipient recipient
     private MessageToFacebook message
 
-    FacebookResponse(String messagingType, Recipient recipient, MessageToFacebook message) {
-        this.messagingType = messagingType
-        this.recipient = recipient
-        this.message = message
+    FacebookResponse(String recipient, String message) {
+        this.recipient = new Recipient()
+        this.recipient.setId(recipient)
+        this.message = new MessageToFacebook(message)
     }
 
     String getMessagingType() {

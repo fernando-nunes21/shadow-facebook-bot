@@ -1,12 +1,14 @@
 package com.shadow.shadow
 
+import groovy.transform.ToString
+
+@ToString(includeNames = true)
 class MessageFromFacebook {
     private String mid
     private String text
 
     MessageFromFacebook() {
-        this.mid = mid
-        this.text = text
+
     }
 
     String getMid() {

@@ -1,10 +1,13 @@
 package com.shadow.shadow
 
+import groovy.transform.ToString
+
+@ToString(includeNames = true)
 class Sender {
     private String id
 
     Sender() {
-        this.id = id
+
     }
 
     String getId() {

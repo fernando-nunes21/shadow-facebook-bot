@@ -1,5 +1,8 @@
 package com.shadow.shadow
 
+import groovy.transform.ToString
+
+@ToString(includeNames = true)
 class Messaging {
     private Sender sender
     private Recipient recipient
@@ -7,10 +10,7 @@ class Messaging {
     private MessageFromFacebook message
 
     Messaging() {
-        this.sender = sender
-        this.recipient = recipient
-        this.timestamp = timestamp
-        this.message = message
+
     }
 
     Sender getSender() {

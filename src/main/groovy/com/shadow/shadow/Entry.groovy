@@ -1,18 +1,18 @@
 package com.shadow.shadow
 
 import groovy.transform.Canonical
+import groovy.transform.ToString
 
 import java.lang.reflect.Array
 
+@ToString(includeNames = true)
 class Entry {
     private String id
     private String time
     private List<Messaging> messaging
 
     Entry() {
-        this.id = id
-        this.time = time
-        this.messaging = messaging
+
     }
 
     String getId() {

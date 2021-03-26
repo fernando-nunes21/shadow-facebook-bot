@@ -2,15 +2,16 @@ package com.shadow.shadow
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.Canonical
+import groovy.transform.ToString
 
+@ToString(includeNames = true)
 class FacebookReceived {
 
     private String object
     private List<Entry> entry
 
     FacebookReceived() {
-        this.object = object
-        this.entry = entry
+
     }
 
     String getObject() {
