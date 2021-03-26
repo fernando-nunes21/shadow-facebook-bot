@@ -1,9 +1,7 @@
 package com.shadow.shadow
 
-
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestTemplate
+
 
 @Service
 class ShadowBot {
@@ -38,7 +36,7 @@ class ShadowBot {
                 facebookClientMessage.contains("anos"))
     }
 
-    private boolean verifyBotNameQuestion(String facebookClientMessage) {
+    private static boolean verifyBotNameQuestion(String facebookClientMessage) {
         facebookClientMessage.contains("nome") && (facebookClientMessage.contains("seu") || facebookClientMessage.contains("teu"))
     }
 
