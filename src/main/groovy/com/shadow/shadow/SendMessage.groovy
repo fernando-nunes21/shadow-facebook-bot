@@ -1,60 +1,34 @@
 package com.shadow.shadow
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
+@Service
 class SendMessage {
 
-    private String urlFacebook="https://graph.facebook.com/v10.0/me/messages?access_token="
-    private FacebookResponse message
-    private HttpHeaders headers = new HttpHeaders()
-    private HttpEntity content
+    @Value('${facebook.send.url}')
+    private String urlFacebook
+
+    @Value('${facebook.token}')
+    private String token
     private RestTemplate restTemplate
 
-    SendMessage(FacebookResponse message, RestTemplate restTemplate, String token) {
-        this.message = message
-        this.restTemplate = restTemplate
-        this.urlFacebook = urlFacebook+token
+    SendMessage() {
+        this.restTemplate = new RestTemplate()
     }
 
-    FacebookResponse getMessage() {
-        return message
-    }
+    void sendMessageToFacebook(FacebookResponse message){
+        String sendUrl = this.urlFacebook+this.token
+        HttpHeaders headers = new HttpHeaders()
+        HttpEntity content
 
-    void setMessage(FacebookResponse message) {
-        this.message = message
-    }
-
-    HttpHeaders getHeaders() {
-        return headers
-    }
-
-    void setHeaders(HttpHeaders headers) {
-        this.headers = headers
-    }
-
-    HttpEntity getContent() {
-        return content
-    }
-
-    void setContent(HttpEntity content) {
-        this.content = content
-    }
-
-    RestTemplate getRestTemplate() {
-        return restTemplate
-    }
-
-    void setRestTemplate(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate
-    }
-
-    void sendMessageToFacebook(){
         headers.setContentType(MediaType.APPLICATION_JSON)
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON))
         content = new HttpEntity<>(message,headers)
-        this.restTemplate.postForEntity(urlFacebook, content, String)
+        this.restTemplate.postForEntity(sendUrl, content, String)
     }
 }

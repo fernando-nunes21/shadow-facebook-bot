@@ -8,12 +8,10 @@ import org.springframework.web.client.RestTemplate
 @Service
 class ShadowBot {
 
-    @Value('${facebook.token}')
-    private String token
-    private RestTemplate restTemplate
+    private SendMessage sendMessage
 
-    ShadowBot() {
-        this.restTemplate = new RestTemplate()
+    ShadowBot(SendMessage sendMessage) {
+        this.sendMessage = sendMessage
     }
 
     void verifyFacebookClientMessage(FacebookReceived message){
@@ -21,10 +19,10 @@ class ShadowBot {
         String facebookClientId = message.getEntry().get(0).getMessaging().get(0).getSender().getId().toString()
         String botMessage
 
-        if(facebookClientMessage.contains("nome") && (facebookClientMessage.contains("seu") || facebookClientMessage.contains("teu"))) {
+        if(verifyBotNameQuestion(facebookClientMessage)) {
             botMessage = "Opa, o meu nome é Shadow"
         }
-        else if((facebookClientMessage.contains("idade") && (facebookClientMessage.contains("sua") || facebookClientMessage.contains("tua"))) || (facebookClientMessage.contains("quantos") && facebookClientMessage.contains("anos"))) {
+        else if(verifyBotAgeQuestion(facebookClientMessage)) {
             botMessage = "Eu não tenho nem 2 semanas de vida :D"
         }
         else{
@@ -34,11 +32,20 @@ class ShadowBot {
         sendToFacebook(facebookClientId, botMessage)
     }
 
+    private boolean verifyBotAgeQuestion(String facebookClientMessage) {
+        (facebookClientMessage.contains("idade") && (facebookClientMessage.contains("sua") ||
+                facebookClientMessage.contains("tua"))) || (facebookClientMessage.contains("quantos") &&
+                facebookClientMessage.contains("anos"))
+    }
+
+    private boolean verifyBotNameQuestion(String facebookClientMessage) {
+        facebookClientMessage.contains("nome") && (facebookClientMessage.contains("seu") || facebookClientMessage.contains("teu"))
+    }
+
 
     void sendToFacebook(String facebookClientId, String botMessage){
         FacebookResponse facebookResponse = new FacebookResponse(facebookClientId,botMessage)
-        SendMessage sendMessage = new SendMessage(facebookResponse,this.restTemplate,this.token)
-        sendMessage.sendMessageToFacebook()
+        sendMessage.sendMessageToFacebook(facebookResponse)
     }
 
 }
