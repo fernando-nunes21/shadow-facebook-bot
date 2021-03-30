@@ -1,4 +1,4 @@
-package com.shadow.shadow
+package message
 
 class MessageToFacebook {
     private String text

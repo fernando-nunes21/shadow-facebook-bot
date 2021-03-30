@@ -1,6 +1,7 @@
 package com.shadow.shadow
 
 import groovy.util.logging.Slf4j
+import message.FacebookReceived
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -31,9 +32,10 @@ class ApplicationController {
                                              @RequestParam("hub.challenge") String facebookChallenge) {
 
         if (this.token == facebookToken && facebookMode == "subscribe") {
-            log.info("Verificado")
+            log.info("AUTHORIZED")
             return ResponseEntity.ok(facebookChallenge)
         } else {
+            log.info("UNAUTHORIZED")
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED)
         }
 
@@ -42,7 +44,7 @@ class ApplicationController {
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<String> postWebhook(@RequestBody FacebookReceived facebookBody) {
         log.info(facebookBody.toString())
-        shadowBot.verifyFacebookClientMessage(facebookBody)
+        shadowBot.sendToFacebook(shadowBot.createBotResponse(facebookBody))
         return new ResponseEntity<>(HttpStatus.OK)
     }
 

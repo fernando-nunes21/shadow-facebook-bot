@@ -1,4 +1,4 @@
-package com.shadow.shadow
+package message
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

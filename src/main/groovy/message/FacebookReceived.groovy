@@ -1,7 +1,6 @@
-package com.shadow.shadow
+package message
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import groovy.transform.Canonical
+
 import groovy.transform.ToString
 
 @ToString(includeNames = true)

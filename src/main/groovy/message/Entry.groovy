@@ -1,9 +1,7 @@
-package com.shadow.shadow
+package message
 
-import groovy.transform.Canonical
+
 import groovy.transform.ToString
-
-import java.lang.reflect.Array
 
 @ToString(includeNames = true)
 class Entry {
