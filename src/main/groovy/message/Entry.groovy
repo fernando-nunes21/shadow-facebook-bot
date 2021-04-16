@@ -36,4 +36,9 @@ class Entry {
     void setMessaging(List<Messaging> messaging) {
         this.messaging = messaging
     }
+
+    String getClientSender(){
+        return this.messaging.get(0).getSender().getId()
+    }
+
 }

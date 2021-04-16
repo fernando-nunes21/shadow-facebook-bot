@@ -41,10 +41,11 @@ class ApplicationController {
 
     }
 
+
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<String> postWebhook(@RequestBody FacebookReceived facebookBody) {
         log.info(facebookBody.toString())
-        shadowBot.sendToFacebook(shadowBot.createBotResponse(facebookBody))
+        shadowBot.sendToFacebook(facebookBody)
         return new ResponseEntity<>(HttpStatus.OK)
     }
 

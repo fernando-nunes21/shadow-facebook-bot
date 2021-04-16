@@ -18,7 +18,11 @@ class FacebookReceived {
     }
 
     List<Entry> getEntry() {
-        return entry
+        return this.entry
+    }
+
+    String getSenderId(){
+        return this.entry.get(0).getClientSender()
     }
 
     void setObject(String object) {
