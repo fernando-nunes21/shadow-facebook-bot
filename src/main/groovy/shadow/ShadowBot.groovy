@@ -1,10 +1,11 @@
-package com.shadow.shadow
+package shadow
 
+import groovy.util.logging.Slf4j
 import message.FacebookReceived
 import message.FacebookResponse
 import org.springframework.stereotype.Service
 
-
+@Slf4j
 @Service
 class ShadowBot {
 
@@ -16,9 +17,8 @@ class ShadowBot {
         this.botResponse = botResponse
     }
 
-    //TODO - nome ruim (metodo faz muito mais do que enviar pro facebook)
-    void sendToFacebook(FacebookReceived facebook){
-        String message = botResponse.selectResponse(facebook)
+    void responseConstructor(FacebookReceived facebook){
+        String message = botResponse.botMessageConstructor(facebook.getTextMessage())
         FacebookResponse facebookResponse = new FacebookResponse(facebook.getSenderId(),message)
         sendMessage.sendMessageToFacebook(facebookResponse)
     }

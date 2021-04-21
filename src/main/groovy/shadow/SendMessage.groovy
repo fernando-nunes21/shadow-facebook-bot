@@ -1,4 +1,4 @@
-package com.shadow.shadow
+package shadow
 
 import message.FacebookResponse
 import org.springframework.beans.factory.annotation.Value

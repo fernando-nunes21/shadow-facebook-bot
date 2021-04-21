@@ -21,6 +21,10 @@ class FacebookReceived {
         return this.entry
     }
 
+    String getTextMessage(){
+        return this.entry.get(0).getMessaging().get(0).getMessage().getText().toLowerCase();
+    }
+
     String getSenderId(){
         return this.entry.get(0).getClientSender()
     }

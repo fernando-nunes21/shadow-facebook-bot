@@ -1,4 +1,4 @@
-package calendar
+package shadow
 
 import com.google.api.client.auth.oauth2.Credential
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
@@ -15,8 +15,11 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.Events
+import groovy.util.logging.Slf4j
+import org.springframework.stereotype.Service
 
-
+@Slf4j
+@Service
 class CalendarIntegration {
     private static final String APPLICATION_NAME = "Google Calendar Integration"
     private static final JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance()
@@ -26,32 +29,22 @@ class CalendarIntegration {
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json"
     private static final int WEEK_MILLISECONDS = 604800017
 
-    //TODO - ESTOU USSANDO MAPA EM FORMA DE LISTA
-    Map<Integer, String> getCalendarStatus(){
-        Map<Integer, String> calendarEvents = new HashMap<>()
-
+    List<String> getCalendarStatus(){
+        List<String> calendarEvents = new ArrayList<>()
         List<Event> items = getCalendarEvents()
 
         if (items.isEmpty()) {
             return calendarEvents
         } else {
-            System.out.println("Upcoming events")
-            int i=0
+            log.info("Upcoming events")
             for (Event event : items) {
                 DateTime start = event.getStart().getDateTime()
-                //TODO - QUAL EVENTO START NULL?
-                if (start == null) {
-                    start = event.getStart().getDate()
-                }
                 String eventText = event.getSummary().toString()+" "+start.toString()
-                calendarEvents.put(i,eventText)
-                i++
-                System.out.printf("%s (%s)\n", event.getSummary(), start)
+                calendarEvents.add(eventText)
             }
         }
         return calendarEvents
     }
-
 
     private List<Event> getCalendarEvents() {
         NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport()

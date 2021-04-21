@@ -1,4 +1,4 @@
-package com.shadow.shadow
+package shadow
 
 
 import org.springframework.boot.SpringApplication
