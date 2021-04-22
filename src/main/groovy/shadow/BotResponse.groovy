@@ -9,16 +9,19 @@ class BotResponse {
 
     private CalendarIntegration calendar
     private BotMessages botMessages
+    private ClimateIntegration climateIntegration
 
-    BotResponse(CalendarIntegration calendarIntegration, BotMessages botMessages){
+    BotResponse(CalendarIntegration calendarIntegration, BotMessages botMessages,
+                ClimateIntegration climateIntegration){
         this.calendar = calendarIntegration
         this.botMessages = botMessages
+        this.climateIntegration = climateIntegration
     }
 
     String botMessageConstructor(String clientMessage){
         String message
 
-        for (int i=0;i<3;i++){
+        for (int i=0;i<4;i++){
             if(clientMessage =~ this.botMessages.getInputMessages(i)){
                 if(this.botMessages.getOutputMessages(i) == ("call Calendar")){
                     List<String> calendarResponse = this.calendar.getCalendarStatus()
@@ -31,6 +34,10 @@ class BotResponse {
                             message = message+event+"\n"
                         }
                     }
+                }
+                else if(this.botMessages.getOutputMessages(i) == ("call Temperature")){
+                    String temperature = this.climateIntegration.getActualWheather()
+                    message = "A temperatura atual é de "+temperature+"ºC"
                 }
                 else{
                     message = this.botMessages.getOutputMessages(i)
