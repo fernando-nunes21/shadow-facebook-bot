@@ -11,10 +11,6 @@ class ShadowApplicationTests {
 
 	}
 
-	@Test
-	void botMessageConstructorTest(){
-		String messageReturn = "Opa, o meu nome é Shadow"
-		//assert messageReturn == new BotResponse().botMessageConstructor("Qual o seu nome?")
-	}
+
 
 }
