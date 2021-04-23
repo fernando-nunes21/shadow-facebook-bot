@@ -29,24 +29,24 @@ class CalendarIntegration {
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json"
     private static final int WEEK_MILLISECONDS = 604800017
 
-    List<String> getCalendarStatus(){
-        List<String> calendarEvents = new ArrayList<>()
+    static String getCalendarStatus(){
         List<Event> items = getCalendarEvents()
+        String calendarMessage=null
 
         if (items.isEmpty()) {
-            return calendarEvents
+            return "Não há eventos na minha agenda essa semana!"
         } else {
             log.info("Upcoming events")
             for (Event event : items) {
                 DateTime start = event.getStart().getDateTime()
                 String eventText = event.getSummary().toString()+" "+start.toString()
-                calendarEvents.add(eventText)
+                calendarMessage = calendarMessage+eventText+"\n"
             }
+            return calendarMessage
         }
-        return calendarEvents
     }
 
-    private List<Event> getCalendarEvents() {
+    private static List<Event> getCalendarEvents() {
         NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport()
         Calendar service = new Calendar.Builder
                 (HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT) as
@@ -65,7 +65,7 @@ class CalendarIntegration {
 
     }
 
-    private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
+    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
             throws IOException {
         InputStream credentials = CalendarIntegration.class.getResourceAsStream(CREDENTIALS_FILE_PATH)
         if (credentials == null) {
