@@ -1,4 +1,4 @@
-package message
+package shadow.message
 
 
 import groovy.transform.ToString
@@ -22,7 +22,7 @@ class FacebookReceived {
     }
 
     String getTextMessage(){
-        return this.entry.get(0).getMessaging().get(0).getMessage().getText().toLowerCase();
+        return this.entry.get(0).getMessaging().get(0).getMessage().getText().toLowerCase()
     }
 
     String getSenderId(){

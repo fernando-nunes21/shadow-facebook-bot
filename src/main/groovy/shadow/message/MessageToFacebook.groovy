@@ -1,4 +1,4 @@
-package message
+package shadow.message
 
 class MessageToFacebook {
     private String text

@@ -1,12 +1,12 @@
-package message
+package shadow.message
 
 import groovy.transform.ToString
 
 @ToString(includeNames = true)
-class Recipient {
+class Sender {
     private String id
 
-    Recipient() {
+    Sender() {
 
     }
 
