@@ -51,7 +51,6 @@ class DialogOutput {
 
     String getEventLocationData(){
         return this.queryResult.getParameters().getLocation().getFullLocation()
-
     }
 
 }

@@ -16,12 +16,11 @@ import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
 import com.google.api.services.calendar.model.Events
-import groovy.util.logging.Slf4j
 import org.springframework.stereotype.Service
 
-@Slf4j
 @Service
 class CalendarAPI {
+
     private static final String APPLICATION_NAME = "Google Calendar Integration"
     private static final GsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance()
     private static final String TOKENS_DIRECTORY_PATH = "tokens"
@@ -31,22 +30,23 @@ class CalendarAPI {
     private static final Integer WEEK_IN_MILLISECONDS = 604800017
     private static final Calendar SERVICE_AUTHORIZATION = buildNewAuthorizedApiClientService()
 
+    //TODO SideEffect problem - Voltar depois e pensar em uma solução que também evite o if se possível
     static String getCalendarWeekEvents(){
-        String calendarMessage = "Eventos da Semana \n"
+        String calendarMessage = "-- Eventos da Semana --\n"
         List<Event> items = getCalendarEvents(System.currentTimeMillis(),WEEK_IN_MILLISECONDS)
         if (items.isEmpty()) {
             return "Não há eventos na minha agenda essa semana!"
-        } else {
-            for (Event event : items) {
-                DateTime eventTime = event.getStart().getDateTime()
-                String getNameAndTimeEvent = event.getSummary().toString() << " -- " << eventTime.toString()
-                calendarMessage = calendarMessage << getNameAndTimeEvent << "\n"
+            } else {
+                for (Event event : items) {
+                    DateTime eventTime = event.getStart().getDateTime()
+                    String nameAndTimeEvent = " -- " << event.getSummary().toString() << " -- " << eventTime.toString()
+                    calendarMessage = calendarMessage << nameAndTimeEvent << "\n"
             }
             return calendarMessage
         }
     }
 
-    static String getCalendarSetConfirmation(long eventDate, String location){
+    static String getCalendarSetEventConfirmation(long eventDate, String location){
         return setEvent(eventDate,location)
     }
 
@@ -58,18 +58,15 @@ class CalendarAPI {
             Event eventToSetOnCalendar = new Event()
                     .setSummary(location)
                     .setLocation(location)
-
             DateTime startDateTime = new DateTime(eventDate)
             EventDateTime startEventTime = new EventDateTime()
                     .setDateTime(startDateTime)
                     .setTimeZone("America/Sao_Paulo")
-
             eventToSetOnCalendar.setStart(startEventTime)
             DateTime endDateTime = new DateTime(eventDate+TWO_HOURS_IN_MILLISECONDS)
             EventDateTime endEventTime = new EventDateTime()
                     .setDateTime(endDateTime)
                     .setTimeZone("America/Sao_Paulo")
-
             eventToSetOnCalendar.setEnd(endEventTime)
             Event.Reminders reminders = new Event.Reminders()
                     .setUseDefault(false)
@@ -116,7 +113,6 @@ class CalendarAPI {
                 .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType("online")
                 .build()
-
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build()
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
     }

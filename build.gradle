@@ -10,12 +10,13 @@ sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+	google()
 }
 
 dependencies {
 
-	implementation 'com.google.api-client:google-api-client:1.23.0'
-	implementation("com.google.oauth-client:google-oauth-client-jetty:1.23.0") {
+	implementation 'com.google.api-client:google-api-client:1.31.1'
+	implementation("com.google.oauth-client:google-oauth-client-jetty:1.31.1") {
 		exclude group: 'org.mortbay.jetty', module: 'servlet-api'
 	}
 	implementation 'com.google.apis:google-api-services-calendar:v3-rev305-1.23.0'
@@ -23,10 +24,14 @@ dependencies {
 	implementation 'org.codehaus.groovy:groovy'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation platform('com.google.cloud:libraries-bom:20.5.0')
 	compile 'com.google.cloud:google-cloud-storage'
 	compile 'com.google.cloud:google-cloud-storage:1.114.0'
+	implementation platform('com.google.cloud:libraries-bom:20.7.0')
+	compile 'com.google.cloud:google-cloud-dialogflow'
+	compile 'com.google.api-client:google-api-client:1.32.1'
+	implementation 'com.auth0:java-jwt:3.18.1'
 }
 
 test {
