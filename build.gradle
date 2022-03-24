@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.4.3'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'groovy'
+	id 'codenarc'
 }
 
 group = 'com.shadow'
@@ -14,7 +15,6 @@ repositories {
 }
 
 dependencies {
-
 	implementation 'com.google.api-client:google-api-client:1.31.1'
 	implementation("com.google.oauth-client:google-oauth-client-jetty:1.31.1") {
 		exclude group: 'org.mortbay.jetty', module: 'servlet-api'
@@ -31,9 +31,28 @@ dependencies {
 	implementation platform('com.google.cloud:libraries-bom:20.7.0')
 	compile 'com.google.cloud:google-cloud-dialogflow'
 	compile 'com.google.api-client:google-api-client:1.32.1'
+	compile 'org.codenarc:CodeNarc:2.2.0'
 	implementation 'com.auth0:java-jwt:3.18.1'
 }
+
+codenarc {
+	ignoreFailures = false
+	configFile = rootProject.file('codenarc.groovy')
+	reportFormat = 'html'
+	toolVersion = '1.4'
+
+	maxPriority1Violations = 0
+	maxPriority2Violations = 0
+	maxPriority3Violations = 0
+}
+
+codenarcTest {
+	enabled = false
+}
+
+codenarcMain.mustRunAfter compileGroovy
 
 test {
 	useJUnitPlatform()
 }
+

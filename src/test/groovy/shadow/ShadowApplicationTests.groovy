@@ -5,12 +5,4 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class ShadowApplicationTests {
-
-	@Test
-	void contextLoads() {
-
-	}
-
-
-
 }
