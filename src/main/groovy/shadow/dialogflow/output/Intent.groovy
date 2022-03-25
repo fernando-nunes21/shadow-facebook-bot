@@ -1,23 +1,19 @@
 package shadow.dialogflow.output
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 
+@Canonical
 @JsonIgnoreProperties(ignoreUnknown = true)
+@CompileDynamic
 class Intent {
+
     private String name
     private String displayName
 
-    Intent(){
-
-    }
-
-    Intent(String name, String displayName) {
-        this.name = name
-        this.displayName = displayName
-    }
-
     String getName() {
-        return name
+        name
     }
 
     void setName(String name) {
@@ -25,10 +21,11 @@ class Intent {
     }
 
     String getDisplayName() {
-        return displayName
+        displayName
     }
 
     void setDisplayName(String displayName) {
         this.displayName = displayName
     }
+
 }

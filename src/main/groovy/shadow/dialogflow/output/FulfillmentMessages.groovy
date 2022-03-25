@@ -1,21 +1,20 @@
 package shadow.dialogflow.output
 
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
+
+@Canonical
+@CompileDynamic
 class FulfillmentMessages {
+
     private Text text
 
-    FulfillmentMessages(){
-
-    }
-
-    FulfillmentMessages(Text text) {
-        this.text = text
-    }
-
     Text getText() {
-        return text
+        text
     }
 
     void setText(Text text) {
         this.text = text
     }
+
 }

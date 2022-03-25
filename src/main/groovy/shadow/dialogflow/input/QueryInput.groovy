@@ -1,20 +1,22 @@
 package shadow.dialogflow.input
 
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 import groovy.transform.ToString
 
+@Canonical
 @ToString(includeNames = true)
+@CompileDynamic
 class QueryInput {
+
     private Text text
 
-    QueryInput(String inputMessage){
-        this.text = new Text(inputMessage)
-    }
-
     Text getText() {
-        return text
+        text
     }
 
     void setText(Text text) {
         this.text = text
     }
+
 }

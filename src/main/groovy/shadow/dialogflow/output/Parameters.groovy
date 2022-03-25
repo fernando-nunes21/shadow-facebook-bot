@@ -2,39 +2,28 @@ package shadow.dialogflow.output
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.google.api.client.json.Json
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 
+@Canonical
 @JsonIgnoreProperties(ignoreUnknown = true)
+@CompileDynamic
 class Parameters {
+
     private String language
     private String locationEntity
     private Location location
     private String date
     private String time
 
-    @JsonProperty("date-time")
+    @JsonProperty('date-time')
     private DateTime dateTime
 
-    @JsonProperty("language-programming")
+    @JsonProperty('language-programming')
     private String languageProgramming
 
-    Parameters(){
-
-    }
-
-    Parameters(String language, String locationEntity, String languageProgramming,
-               DateTime dateTime, Location location, String date, String time) {
-        this.language = language
-        this.location = location
-        this.languageProgramming = languageProgramming
-        this.dateTime = dateTime
-        this.locationEntity = locationEntity
-        this.date = date
-        this.time = time
-    }
-
     Location getLocation() {
-        return location
+        location
     }
 
     void setLocation(Location location) {
@@ -42,7 +31,7 @@ class Parameters {
     }
 
     String getDate() {
-        return date
+        date
     }
 
     void setDate(String date) {
@@ -50,7 +39,7 @@ class Parameters {
     }
 
     String getTime() {
-        return time
+        time
     }
 
     void setTime(String time) {
@@ -58,7 +47,7 @@ class Parameters {
     }
 
     String getLocationEntity() {
-        return locationEntity
+        locationEntity
     }
 
     void setLocationEntity(String locationEntity) {
@@ -66,7 +55,7 @@ class Parameters {
     }
 
     DateTime getDateTime() {
-        return dateTime
+        dateTime
     }
 
     void setDateTime(DateTime dateTime) {
@@ -74,7 +63,7 @@ class Parameters {
     }
 
     String getLanguage() {
-        return language
+        language
     }
 
     void setLanguage(String language) {
@@ -82,7 +71,7 @@ class Parameters {
     }
 
     String getLanguageProgramming() {
-        return languageProgramming
+        languageProgramming
     }
 
     void setLanguageProgramming(String languageProgramming) {

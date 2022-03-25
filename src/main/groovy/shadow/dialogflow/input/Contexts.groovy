@@ -1,17 +1,19 @@
 package shadow.dialogflow.input
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import groovy.transform.CompileDynamic
 import groovy.transform.ToString
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString(includeNames = true)
+@CompileDynamic
 class Contexts {
+
     private String name
     private String lifespanCount
     private ContextsParameters parameters
 
-    Contexts(){
-
+    Contexts() {
     }
 
     Contexts(String name, String lifespanCount, ContextsParameters parameters) {
@@ -21,7 +23,7 @@ class Contexts {
     }
 
     String getName() {
-        return name
+        name
     }
 
     void setName(String name) {
@@ -29,7 +31,7 @@ class Contexts {
     }
 
     String getLifespanCount() {
-        return lifespanCount
+        lifespanCount
     }
 
     void setLifespanCount(String lifespanCount) {
@@ -37,10 +39,11 @@ class Contexts {
     }
 
     Contexts getParameters() {
-        return parameters
+        parameters
     }
 
     void setParameters(ContextsParameters parameters) {
         this.parameters = parameters
     }
+
 }

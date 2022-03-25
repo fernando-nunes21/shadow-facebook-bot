@@ -1,23 +1,18 @@
 package shadow.dialogflow.output
 
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
+
+@Canonical
+@CompileDynamic
 class OutputContexts {
+
     private String name
     private String lifespanCount
     private OutputContextsParameters parameters
 
-    OutputContexts(){
-
-    }
-
-    OutputContexts(String name, String lifespanCount, OutputContextsParameters parameters) {
-        this.name = name
-        this.lifespanCount = lifespanCount
-        this.parameters = parameters
-    }
-
-
     String getName() {
-        return name
+        name
     }
 
     void setName(String name) {
@@ -25,7 +20,7 @@ class OutputContexts {
     }
 
     String getLifespanCount() {
-        return lifespanCount
+        lifespanCount
     }
 
     void setLifespanCount(String lifespanCount) {
@@ -33,10 +28,11 @@ class OutputContexts {
     }
 
     OutputContextsParameters getParameters() {
-        return parameters
+        parameters
     }
 
     void setParameters(OutputContextsParameters parameters) {
         this.parameters = parameters
     }
+
 }

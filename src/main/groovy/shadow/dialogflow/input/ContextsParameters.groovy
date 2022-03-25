@@ -2,44 +2,34 @@ package shadow.dialogflow.input
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 import groovy.transform.ToString
-import shadow.dialogflow.input.DateTime
 
+@Canonical
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString(includeNames = true)
+@CompileDynamic
 class ContextsParameters {
+
     private String language
 
-    @JsonProperty("language.original")
+    @JsonProperty('language.original')
     private String languageOriginal
 
-    @JsonProperty("language-programming")
+    @JsonProperty('language-programming')
     private String languageProgramming
 
-    @JsonProperty("language-programming.original")
+    @JsonProperty('language-programming.original')
     private String languageProgrammingOriginal
 
     private String locationEntity
 
-    @JsonProperty("date-time")
+    @JsonProperty('date-time')
     private DateTime dateTime
 
-    ContextsParameters(){
-
-    }
-
-    ContextsParameters(String language, String languageOriginal, String languageProgramming,
-                             String languageProgrammingOriginal, DateTime dateTime, String locationEntity) {
-        this.language = language
-        this.languageOriginal = languageOriginal
-        this.languageProgramming = languageProgramming
-        this.languageProgrammingOriginal = languageProgrammingOriginal
-        this.dateTime = dateTime
-        this.locationEntity = locationEntity
-    }
-
     String getLocationEntity() {
-        return locationEntity
+        locationEntity
     }
 
     void setLocationEntity(String locationEntity) {
@@ -47,7 +37,7 @@ class ContextsParameters {
     }
 
     DateTime getDateTime() {
-        return dateTime
+        dateTime
     }
 
     void setDateTime(DateTime dateTime) {
@@ -55,7 +45,7 @@ class ContextsParameters {
     }
 
     String getLanguage() {
-        return language
+        language
     }
 
     void setLanguage(String language) {
@@ -63,7 +53,7 @@ class ContextsParameters {
     }
 
     String getLanguageOriginal() {
-        return languageOriginal
+        languageOriginal
     }
 
     void setLanguageOriginal(String languageOriginal) {
@@ -71,7 +61,7 @@ class ContextsParameters {
     }
 
     String getLanguageProgramming() {
-        return languageProgramming
+        languageProgramming
     }
 
     void setLanguageProgramming(String languageProgramming) {
@@ -79,10 +69,12 @@ class ContextsParameters {
     }
 
     String getLanguageProgrammingOriginal() {
-        return languageProgrammingOriginal
+        languageProgrammingOriginal
     }
 
     void setLanguageProgrammingOriginal(String languageProgrammingOriginal) {
         this.languageProgrammingOriginal = languageProgrammingOriginal
     }
+
 }
+
