@@ -358,7 +358,7 @@ ruleset {
   // rulesets/security.xml
   FileCreateTempFile
   InsecureRandom
-  JavaIoPackageAccess
+  //JavaIoPackageAccess
   NonFinalPublicField
   NonFinalSubclassOfSensitiveInterface
   ObjectFinalize
@@ -406,7 +406,7 @@ ruleset {
   UnnecessaryFinalOnPrivateMethod
   UnnecessaryFloatInstantiation
   UnnecessaryGString
-  UnnecessaryGetter
+  //UnnecessaryGetter
   UnnecessaryIfStatement
   UnnecessaryInstanceOfCheck
   UnnecessaryInstantiationToGetClass

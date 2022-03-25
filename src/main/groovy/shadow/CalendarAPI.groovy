@@ -16,104 +16,111 @@ import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
 import com.google.api.services.calendar.model.Events
+import groovy.transform.CompileDynamic
 import org.springframework.stereotype.Service
 
 @Service
+@CompileDynamic
 class CalendarAPI {
 
-    private static final String APPLICATION_NAME = "Google Calendar Integration"
-    private static final GsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance()
-    private static final String TOKENS_DIRECTORY_PATH = "tokens"
-    private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR)
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json"
-    private static final Integer TWO_HOURS_IN_MILLISECONDS = 7200000
+    private static final String TIME_SEPARATOR = '--'
+    private static final String CALENDAR_ID = 'primary'
+    private static final String CALENDAR_ZONE = 'America/Sao_Paulo'
+    private static final String CALENDAR_START_TIME = 'startTime'
+    private static final String ACESS_TYPE_ONLINE = 'online'
+    private static final String USER_ID = 'user'
     private static final Integer WEEK_IN_MILLISECONDS = 604800017
-    private static final Calendar SERVICE_AUTHORIZATION = buildNewAuthorizedApiClientService()
+    private static final Integer TWO_HOURS_IN_MILLISECONDS = 7200000
+    private static final Integer LOCAL_SERVER_PORT = 8888
+    private final String applicationName = 'Google Calendar Integration'
+    private final GsonFactory jsonFactory = GsonFactory.defaultInstance
+    private final String tokensDirectoryPath = 'tokens'
+    private final List<String> scopes = Collections.singletonList(CalendarScopes.CALENDAR)
+    private final String credentialsFilePath = '/credentials.json'
+    private final Calendar serviceAuthorization = generateNewAuthorizedApiClientService()
 
-    //TODO SideEffect problem - Voltar depois e pensar em uma solução que também evite o if se possível
-    static String getCalendarWeekEvents(){
-        String calendarMessage = "-- Eventos da Semana --\n"
-        List<Event> items = getCalendarEvents(System.currentTimeMillis(),WEEK_IN_MILLISECONDS)
-        if (items.isEmpty()) {
-            return "Não há eventos na minha agenda essa semana!"
-            } else {
-                for (Event event : items) {
-                    DateTime eventTime = event.getStart().getDateTime()
-                    String nameAndTimeEvent = " -- " << event.getSummary().toString() << " -- " << eventTime.toString()
-                    calendarMessage = calendarMessage << nameAndTimeEvent << "\n"
-            }
-            return calendarMessage
+    String getCalendarWeekEvents() {
+        String calendarMessage = '-- Eventos da Semana --\n'
+        List<Event> items = getCalendarEvents(System.currentTimeMillis(), WEEK_IN_MILLISECONDS)
+        if (items.empty) {
+            return 'Não há eventos na minha agenda essa semana!'
         }
+        for (Event event : items) {
+            DateTime eventTime = event.getStart().getDateTime()
+            String nameAndTimeEvent =
+                    TIME_SEPARATOR << event.getSummary().toString() << TIME_SEPARATOR << eventTime.toString()
+            calendarMessage = calendarMessage << nameAndTimeEvent << '\n'
+        }
+        calendarMessage
     }
 
-    static String getCalendarSetEventConfirmation(long eventDate, String location){
-        return setEvent(eventDate,location)
+    String getCalendarSetEventConfirmation(long eventDate, String location) {
+        setEvent(eventDate, location)
     }
 
-    private static String setEvent(long eventDate, String location){
-        if (!validateDateEventAlreadySet(eventDate)){
-            return "Já existe um evento registrado para essa data"
-        } else{
-            String calendarId = "primary"
-            Event eventToSetOnCalendar = new Event()
+    private String setEvent(long eventDate, String location) {
+        if (!validateDateEventAlreadySet(eventDate)) {
+            return 'Já existe um evento registrado para essa data'
+        }
+        String calendarId = CALENDAR_ID
+        Event eventToSetOnCalendar = new Event()
                     .setSummary(location)
                     .setLocation(location)
-            DateTime startDateTime = new DateTime(eventDate)
-            EventDateTime startEventTime = new EventDateTime()
+        DateTime startDateTime = new DateTime(eventDate)
+        EventDateTime startEventTime = new EventDateTime()
                     .setDateTime(startDateTime)
-                    .setTimeZone("America/Sao_Paulo")
-            eventToSetOnCalendar.setStart(startEventTime)
-            DateTime endDateTime = new DateTime(eventDate+TWO_HOURS_IN_MILLISECONDS)
-            EventDateTime endEventTime = new EventDateTime()
+                    .setTimeZone(CALENDAR_ZONE)
+        eventToSetOnCalendar.setStart(startEventTime)
+        DateTime endDateTime = new DateTime(eventDate + TWO_HOURS_IN_MILLISECONDS)
+        EventDateTime endEventTime = new EventDateTime()
                     .setDateTime(endDateTime)
-                    .setTimeZone("America/Sao_Paulo")
-            eventToSetOnCalendar.setEnd(endEventTime)
-            Event.Reminders reminders = new Event.Reminders()
-                    .setUseDefault(false)
-            eventToSetOnCalendar.setReminders(reminders)
-            SERVICE_AUTHORIZATION.events().insert(calendarId, eventToSetOnCalendar).execute()
-            return "Compromisso marcado na agenda com sucesso!"
-        }
+                    .setTimeZone(CALENDAR_ZONE)
+        eventToSetOnCalendar.setEnd(endEventTime)
+        Event.Reminders reminders = new Event.Reminders().setUseDefault(false)
+        eventToSetOnCalendar.setReminders(reminders)
+        serviceAuthorization.events().insert(calendarId, eventToSetOnCalendar).execute()
+        'Compromisso marcado na agenda com sucesso!'
     }
 
-    private static boolean validateDateEventAlreadySet(long eventDate){
-        List<Event> items = getCalendarEvents(eventDate,eventDate+TWO_HOURS_IN_MILLISECONDS)
-        return items.isEmpty()
+    private boolean validateDateEventAlreadySet(long eventDate) {
+        List<Event> items = getCalendarEvents(eventDate, eventDate + TWO_HOURS_IN_MILLISECONDS)
+        items.isEmpty()
     }
 
-    private static List<Event> getCalendarEvents(long currentDayGet, long weekMilliseconds) {
+    private List<Event> getCalendarEvents(long currentDayGet, long weekMilliseconds) {
         DateTime timeNowInMilliseconds = new DateTime(currentDayGet)
         DateTime timeEndInMilliseconds = new DateTime(currentDayGet + weekMilliseconds)
-        Events eventsFromCalendar = SERVICE_AUTHORIZATION.events().list("primary")
+        Events eventsFromCalendar = serviceAuthorization.events().list(CALENDAR_ID)
                 .setTimeMin(timeNowInMilliseconds)
                 .setTimeMax(timeEndInMilliseconds)
-                .setOrderBy("startTime")
+                .setOrderBy(CALENDAR_START_TIME)
                 .setSingleEvents(true)
                 .execute()
-        return eventsFromCalendar.getItems()
+        eventsFromCalendar.getItems()
     }
 
-    private static Calendar buildNewAuthorizedApiClientService(){
-        NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport()
+    private Calendar generateNewAuthorizedApiClientService() {
+        NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport()
         Calendar service = new Calendar.Builder
-                (HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT) as
-                        HttpRequestInitializer).setApplicationName(APPLICATION_NAME)
+                (httpTransport, jsonFactory, getCredentials(httpTransport) as HttpRequestInitializer)
+                .setApplicationName(applicationName)
                 .build()
-        return service
+        service
     }
 
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
-        InputStream credentials = CalendarAPI.class.getResourceAsStream(CREDENTIALS_FILE_PATH)
+    private Credential getCredentials(final NetHttpTransport httpTransport) throws IOException {
+        InputStream credentials = CalendarAPI.getResourceAsStream(credentialsFilePath)
         if (credentials == null) {
-            throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH)
+            throw new FileNotFoundException('Resource not found: ' + credentialsFilePath)
         }
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(credentials))
+        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(credentials))
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
-                .setAccessType("online")
+                httpTransport, jsonFactory, clientSecrets, scopes)
+                .setDataStoreFactory(new FileDataStoreFactory(new File(tokensDirectoryPath)))
+                .setAccessType(ACESS_TYPE_ONLINE)
                 .build()
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build()
-        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(LOCAL_SERVER_PORT).build()
+        new AuthorizationCodeInstalledApp(flow, receiver).authorize(USER_ID)
     }
+
 }
