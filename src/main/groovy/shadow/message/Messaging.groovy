@@ -1,32 +1,33 @@
 package shadow.message
 
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 import groovy.transform.ToString
 
+@Canonical
 @ToString(includeNames = true)
+@CompileDynamic
 class Messaging {
+
     private Sender sender
     private Recipient recipient
     private String timestamp
     private MessageFromFacebook message
 
-    Messaging() {
-
-    }
-
     Sender getSender() {
-        return sender
+        sender
     }
 
     Recipient getRecipient() {
-        return recipient
+        recipient
     }
 
     String getTimestamp() {
-        return timestamp
+        timestamp
     }
 
     MessageFromFacebook getMessage() {
-        return message
+        message
     }
 
     void setSender(Sender sender) {
@@ -44,4 +45,5 @@ class Messaging {
     void setMessage(MessageFromFacebook message) {
         this.message = message
     }
+
 }

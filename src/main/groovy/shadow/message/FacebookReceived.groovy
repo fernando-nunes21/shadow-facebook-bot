@@ -1,32 +1,31 @@
 package shadow.message
 
-
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 import groovy.transform.ToString
 
+@Canonical
 @ToString(includeNames = true)
+@CompileDynamic
 class FacebookReceived {
 
     private String object
     private List<Entry> entry
 
-    FacebookReceived() {
-
-    }
-
     String getObject() {
-        return object
+        object
     }
 
     List<Entry> getEntry() {
-        return this.entry
+        this.entry
     }
 
-    String getTextMessage(){
-        return this.entry.get(0).getMessaging().get(0).getMessage().getText().toLowerCase()
+    String getTextMessage() {
+        this.entry.get(0).messaging.get(0).message.text.toLowerCase()
     }
 
-    String getSenderId(){
-        return this.entry.get(0).getClientSender()
+    String getSenderId() {
+        this.entry.get(0).clientSender
     }
 
     void setObject(String object) {
@@ -36,4 +35,5 @@ class FacebookReceived {
     void setEntry(List<Entry> entry) {
         this.entry = entry
     }
+
 }

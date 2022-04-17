@@ -1,28 +1,28 @@
 package shadow.message
 
-
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 import groovy.transform.ToString
 
+@Canonical
 @ToString(includeNames = true)
+@CompileDynamic
 class Entry {
+
     private String id
     private String time
     private List<Messaging> messaging
 
-    Entry() {
-
-    }
-
     String getId() {
-        return id
+        id
     }
 
     String getTime() {
-        return time
+        time
     }
 
     List<Messaging> getMessaging() {
-        return messaging
+        messaging
     }
 
     void setId(String id) {
@@ -37,8 +37,8 @@ class Entry {
         this.messaging = messaging
     }
 
-    String getClientSender(){
-        return this.messaging.get(0).getSender().getId()
+    String getClientSender() {
+        this.messaging.get(0).sender.id
     }
 
 }

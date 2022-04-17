@@ -1,30 +1,28 @@
 package shadow.message
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 
+@Canonical
+@CompileDynamic
 class FacebookResponse {
 
-    @JsonProperty("messaging_type")
-    private String messagingType = "RESPONSE"
+    @JsonProperty('messaging_type')
+    private String messagingType = 'RESPONSE'
     private Recipient recipient
     private MessageToFacebook message
 
-    FacebookResponse(String recipient, String message) {
-        this.recipient = new Recipient()
-        this.recipient.setId(recipient)
-        this.message = new MessageToFacebook(message)
-    }
-
     String getMessagingType() {
-        return messagingType
+        messagingType
     }
 
     Recipient getRecipient() {
-        return recipient
+        recipient
     }
 
     MessageToFacebook getMessage() {
-        return message
+        message
     }
 
     void setMessagingType(String messagingType) {
@@ -38,4 +36,5 @@ class FacebookResponse {
     void setMessage(MessageToFacebook message) {
         this.message = message
     }
+
 }
