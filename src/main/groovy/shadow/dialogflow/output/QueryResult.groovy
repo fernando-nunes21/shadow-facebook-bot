@@ -1,10 +1,14 @@
 package shadow.dialogflow.output
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 
-
+@Canonical
 @JsonIgnoreProperties(ignoreUnknown = true)
+@CompileDynamic
 class QueryResult {
+
     private String queryText
     private String action
     private Parameters parameters
@@ -16,28 +20,8 @@ class QueryResult {
     private String intentDetectionConfidence
     private String languageCode
 
-    QueryResult(){
-
-    }
-
-    QueryResult(String queryText, String action, Parameters parameters, String allRequiredParamsPresent,
-                String fulfillmentText, List<FulfillmentMessages> fulfillmentMessages,
-                List<OutputContexts> outputContexts, Intent intent, String intentDetectionConfidence,
-                String languageCode) {
-        this.queryText = queryText
-        this.action = action
-        this.parameters = parameters
-        this.allRequiredParamsPresent = allRequiredParamsPresent
-        this.fulfillmentText = fulfillmentText
-        this.fulfillmentMessages = fulfillmentMessages
-        this.outputContexts = outputContexts
-        this.intent = intent
-        this.intentDetectionConfidence = intentDetectionConfidence
-        this.languageCode = languageCode
-    }
-
     String getQueryText() {
-        return queryText
+        queryText
     }
 
     void setQueryText(String queryText) {
@@ -45,7 +29,7 @@ class QueryResult {
     }
 
     String getAction() {
-        return action
+        action
     }
 
     void setAction(String action) {
@@ -53,7 +37,7 @@ class QueryResult {
     }
 
     Parameters getParameters() {
-        return parameters
+        parameters
     }
 
     void setParameters(Parameters parameters) {
@@ -61,7 +45,7 @@ class QueryResult {
     }
 
     String getAllRequiredParamsPresent() {
-        return allRequiredParamsPresent
+        allRequiredParamsPresent
     }
 
     void setAllRequiredParamsPresent(String allRequiredParamsPresent) {
@@ -69,7 +53,7 @@ class QueryResult {
     }
 
     String getFulfillmentText() {
-        return fulfillmentText
+        fulfillmentText
     }
 
     void setFulfillmentText(String fulfillmentText) {
@@ -77,7 +61,7 @@ class QueryResult {
     }
 
     List<FulfillmentMessages> getFulfillmentMessages() {
-        return fulfillmentMessages
+        fulfillmentMessages
     }
 
     void setFulfillmentMessages(List<FulfillmentMessages> fulfillmentMessages) {
@@ -85,7 +69,7 @@ class QueryResult {
     }
 
     List<OutputContexts> getOutputContexts() {
-        return outputContexts
+        outputContexts
     }
 
     void setOutputContexts(List<OutputContexts> outputContexts) {
@@ -93,7 +77,7 @@ class QueryResult {
     }
 
     Intent getIntent() {
-        return intent
+        intent
     }
 
     void setIntent(Intent intent) {
@@ -101,7 +85,7 @@ class QueryResult {
     }
 
     String getIntentDetectionConfidence() {
-        return intentDetectionConfidence
+        intentDetectionConfidence
     }
 
     void setIntentDetectionConfidence(String intentDetectionConfidence) {
@@ -109,7 +93,7 @@ class QueryResult {
     }
 
     String getLanguageCode() {
-        return languageCode
+        languageCode
     }
 
     void setLanguageCode(String languageCode) {

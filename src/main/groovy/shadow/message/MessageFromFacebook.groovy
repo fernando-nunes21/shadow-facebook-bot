@@ -1,22 +1,23 @@
 package shadow.message
 
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 import groovy.transform.ToString
 
+@Canonical
 @ToString(includeNames = true)
+@CompileDynamic
 class MessageFromFacebook {
+
     private String mid
     private String text
 
-    MessageFromFacebook() {
-
-    }
-
     String getMid() {
-        return mid
+        mid
     }
 
     String getText() {
-        return text
+        text
     }
 
     void setMid(String mid) {
@@ -26,4 +27,5 @@ class MessageFromFacebook {
     void setText(String text) {
         this.text = text
     }
+
 }

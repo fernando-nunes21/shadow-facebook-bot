@@ -1,5 +1,6 @@
 package shadow
 
+import groovy.transform.CompileDynamic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -12,13 +13,15 @@ import org.springframework.web.bind.annotation.RestController
 import shadow.message.FacebookReceived
 
 @RestController
-@RequestMapping(value="/webhook")
+@RequestMapping(value='/webhook')
+@CompileDynamic
 class ApplicationController {
 
+    private final FacebookAdapter facebookAdapter
+    private final BotResponse botResponse
+
     @Value('${facebook.verify.url}')
-    private String token
-    private FacebookAdapter facebookAdapter
-    private BotResponse botResponse
+    String token
 
     ApplicationController(FacebookAdapter facebookAdapter, BotResponse botResponse) {
         this.facebookAdapter = facebookAdapter
@@ -26,29 +29,27 @@ class ApplicationController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    ResponseEntity<String> getFacebookChallengeValidation(@RequestParam("hub.mode") String facebookMode,
-                                      @RequestParam("hub.verify_token") String facebookToken,
-                                      @RequestParam("hub.challenge") String facebookChallenge) {
-        if (this.token == facebookToken && facebookMode == "subscribe") {
+    ResponseEntity<String> getFacebookChallengeValidation(@RequestParam('hub.mode') String facebookMode,
+                                      @RequestParam('hub.verify_token') String facebookToken,
+                                      @RequestParam('hub.challenge') String facebookChallenge) {
+        if (this.token == facebookToken && facebookMode == 'subscribe') {
             return ResponseEntity.ok(facebookChallenge)
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED)
         }
+        new ResponseEntity<>(HttpStatus.UNAUTHORIZED)
     }
 
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<String> getFacebookContent(@RequestBody FacebookReceived facebookContent) {
-        sendContentToProcessResponse(facebookContent.getSenderId(), facebookContent.getTextMessage())
-        return new ResponseEntity<>(HttpStatus.OK)
+        sendContentToProcessResponse(facebookContent.senderId, facebookContent.textMessage)
+        new ResponseEntity<>(HttpStatus.OK)
     }
 
-    @Async
-    void sendContentToProcessResponse(String clientId, String clientMessage){
+    void sendContentToProcessResponse(String clientId, String clientMessage) {
         String response = botResponse.getBotResponse(clientId, clientMessage)
         sendResponseToFacebookAdapter(clientId, response)
     }
 
-    void sendResponseToFacebookAdapter(String clientId, response){
+    void sendResponseToFacebookAdapter(String clientId, String response) {
         facebookAdapter.sendMessageToFacebook(clientId, response)
     }
 

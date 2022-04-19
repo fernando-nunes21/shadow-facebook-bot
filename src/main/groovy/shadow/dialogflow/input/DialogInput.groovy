@@ -1,24 +1,24 @@
 package shadow.dialogflow.input
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 import groovy.transform.ToString
 
+@Canonical
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString(includeNames = true)
+@CompileDynamic
 class DialogInput {
-    private QueryInput query_input
+
+    @JsonProperty('query_input')
+    private QueryInput queryInput
+
     private QueryParams queryParams
 
-    DialogInput(){
-
-    }
-
-    DialogInput(String input){
-        this.query_input = new QueryInput(input)
-    }
-
     QueryParams getQueryParams() {
-        return queryParams
+        queryParams
     }
 
     void setQueryParams(QueryParams queryParams) {
@@ -26,12 +26,11 @@ class DialogInput {
     }
 
     QueryInput getQuery_input() {
-        return query_input
+        queryInput
     }
 
-    void setQuery_input(QueryInput query_input) {
-        this.query_input = query_input
+    void setQuery_input(QueryInput queryInput) {
+        this.queryInput = queryInput
     }
-
 
 }

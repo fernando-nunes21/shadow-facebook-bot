@@ -1,20 +1,30 @@
 package shadow
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import groovy.transform.CompileDynamic
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import shadow.dialogflow.DialogflowAPI
 import shadow.dialogflow.output.DialogOutput
+
 import java.text.SimpleDateFormat
 
 @Service
-
+@CompileDynamic
 class BotResponse {
 
-    private CalendarAPI calendarAPI
-    private DialogflowAPI dialogflowAPI
-    private Map<String, Map<String, String>> context
-    private ObjectMapper objectMapper
+    private final static String EVENT_DAY = 'eventDay'
+    private final static String EVENT_HOURS = 'eventHours'
+    private final static String EVENT_LOCATION = 'eventLocation'
+    private final static int START_DAY_SUBSTRING = 0
+    private final static int FINAL_DAY_SUBSTRING = 11
+    private final static int START_HOURS_SUBSTRING = 11
+    private final static int FINAL_HOURS_SUBSTRING = 19
+
+    private final CalendarAPI calendarAPI
+    private final DialogflowAPI dialogflowAPI
+    private final ObjectMapper objectMapper
+    Map<String, Map<String, String>> context
 
     BotResponse(CalendarAPI calendarAPI, DialogflowAPI dialogflowAPI, ObjectMapper objectMapper) {
         this.calendarAPI = calendarAPI
@@ -23,134 +33,129 @@ class BotResponse {
         this.objectMapper = objectMapper
     }
 
-    String getBotResponse(String clientId, String clientMessage){
+    String getBotResponse(String clientId, String clientMessage) {
         ResponseEntity<String> dialogFlowResponse = dialogflowAPI.getDialogFlowResponse(clientMessage, clientId)
-        return getMessageResponse(objectMapper.readValue(dialogFlowResponse.body, DialogOutput.class), clientId)
+        getMessageResponse(objectMapper.readValue(dialogFlowResponse.body, DialogOutput), clientId)
     }
 
-    private String getMessageResponse(DialogOutput dialogOutput, String clientId){
-        if (dialogOutput.getTextOutput() == "callCalendarWeakPlan") {
-            return this.calendarAPI.getCalendarWeekEvents()
-        } else if (dialogOutput.getTextOutput() == "callCalendarSetEvent"){
+    private static long convertDateTimeToMilliseconds(String eventDay, String eventHours) {
+        String eventDateToFormat = eventDay[START_DAY_SUBSTRING..FINAL_DAY_SUBSTRING] << eventHours[
+                START_HOURS_SUBSTRING..FINAL_HOURS_SUBSTRING]
+        SimpleDateFormat dataModelToFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
+        Date eventDateInMilliSeconds = dataModelToFormat.parse(eventDateToFormat.toString())
+        eventDateInMilliSeconds.time
+    }
+
+    private String getMessageResponse(DialogOutput dialogOutput, String clientId) {
+        if (dialogOutput.textOutput == 'callCalendarWeakPlan') {
+            return this.calendarAPI.calendarWeekEvents
+        } else if (dialogOutput.textOutput == 'callCalendarSetEvent') {
             String contextMessage
-            if (isClientContextEmpty(clientId)){
-                createClientContextFields(clientId, dialogOutput)
+            if (isClientContextEmpty(clientId)) {
+                this.context.put(clientId, startClientContext(dialogOutput))
             } else {
                 updateClientContextFields(clientId, dialogOutput)
             }
             contextMessage = getMessageForEmptyContextField(clientId)
-            if (isContextMessageNotEmpty(contextMessage)){
+            if (isContextMessageNotEmpty(contextMessage)) {
                 return contextMessage
-            } else {
-                long eventDataConverted = convertDateTimeToMilliseconds(
-                        this.context.get(clientId).get("eventDay"),
-                        this.context.get(clientId).get("eventHours"))
-                String eventLocation = this.context.get(clientId).get("eventLocation")
-                this.context.remove(clientId)
-                return this.calendarAPI.getCalendarSetEventConfirmation(eventDataConverted, eventLocation)
             }
-        } else{
+            long eventDataConverted = convertDateTimeToMilliseconds(
+                    this.context.get(clientId).get(EVENT_DAY),
+                    this.context.get(clientId).get(EVENT_HOURS))
+            String eventLocation = this.context.get(clientId).get(EVENT_LOCATION)
             this.context.remove(clientId)
-            return dialogOutput.getTextOutput()
+            return this.calendarAPI.getCalendarSetEventConfirmation(eventDataConverted, eventLocation)
         }
+        this.context.remove(clientId)
+        dialogOutput.textOutput
     }
 
-    private boolean isClientContextEmpty(String clientId){
-        return this.context.get(clientId) == null
+    private boolean isClientContextEmpty(String clientId) {
+        this.context.get(clientId) == null
     }
 
-    private boolean isContextMessageNotEmpty(String contextMessage){
-        return contextMessage != ""
+    private boolean isContextMessageNotEmpty(String contextMessage) {
+        contextMessage != ''
     }
 
-    private void createClientContextFields(String clientId, DialogOutput dialogOutput){
-        Map<String, String> newContextContent = new HashMap<>()
-        newContextContent.put("eventDay", dialogOutput.getEventDay())
-        newContextContent.put("eventHours", dialogOutput.getEventHours())
-        if (dialogOutput.getEventLocation() == null){
-            newContextContent.put("eventLocation", null)
-        } else{
-            newContextContent.put("eventLocation", dialogOutput.getEventLocationData())
+    private Map<String, String> startClientContext(DialogOutput dialogOutput) {
+        Map<String, String> newContextContent = [:]
+        newContextContent.put(EVENT_DAY, dialogOutput.eventDay)
+        newContextContent.put(EVENT_HOURS, dialogOutput.eventHours)
+        if (dialogOutput.eventLocation == null) {
+            newContextContent.put(EVENT_LOCATION, null)
+        } else {
+            newContextContent.put(EVENT_LOCATION, dialogOutput.eventLocationData)
         }
-        this.context.put(clientId, newContextContent)
+        newContextContent
     }
 
-    private void updateClientContextFields(String clientId, DialogOutput dialogOutput){
-        if (isClientContextEventDayFieldEmptyOrNull(clientId)){
-            this.context.get(clientId).put("eventDay", dialogOutput.getEventDay())
+    private void updateClientContextFields(String clientId, DialogOutput dialogOutput) {
+        if (isClientContextEventDayFieldEmptyOrNull(clientId)) {
+            this.context.get(clientId).put(EVENT_DAY, dialogOutput.eventDay)
         }
-        if (isClientContextEventHoursFieldEmptyOrNull(clientId)){
-            this.context.get(clientId).put("eventHours", dialogOutput.getEventHours())
+        if (isClientContextEventHoursFieldEmptyOrNull(clientId)) {
+            this.context.get(clientId).put(EVENT_HOURS, dialogOutput.eventHours)
         }
-        if (isClientContextEventLocationFieldNull(clientId)){
-            if (dialogOutput.getEventLocation() == null || dialogOutput.getEventLocationData() == ""){
-                this.context.get(clientId).put("eventLocation", null)
-            } else{
-                this.context.get(clientId).put("eventLocation",
-                        dialogOutput.getEventLocationData().toString())
+        if (isClientContextEventLocationFieldNull(clientId)) {
+            if (dialogOutput.eventLocation == null || dialogOutput.eventLocationData == '') {
+                this.context.get(clientId).put(EVENT_LOCATION, null)
+            } else {
+                this.context.get(clientId).put(EVENT_LOCATION,
+                        dialogOutput.eventLocationData)
             }
         }
     }
 
-    private boolean isClientContextEventDayFieldEmptyOrNull(String clientId){
-        return this.context.get(clientId).get("eventDay") == null ||
-                this.context.get(clientId).get("eventDay") == ""
+    private boolean isClientContextEventDayFieldEmptyOrNull(String clientId) {
+        this.context.get(clientId).get(EVENT_DAY) == null || this.context.get(clientId).get(EVENT_DAY) == ''
     }
 
-    private boolean isClientContextEventHoursFieldEmptyOrNull(String clientId){
-        return this.context.get(clientId).get("eventHours") == null ||
-                this.context.get(clientId).get("eventHours") == ""
+    private boolean isClientContextEventHoursFieldEmptyOrNull(String clientId) {
+        this.context.get(clientId).get(EVENT_HOURS) == null || this.context.get(clientId).get(EVENT_HOURS) == ''
     }
 
-    private boolean isClientContextEventLocationFieldNull(String clientId){
-        return this.context.get(clientId).get("eventLocation") == null
+    private boolean isClientContextEventLocationFieldNull(String clientId) {
+        this.context.get(clientId).get(EVENT_LOCATION) == null
     }
 
-    private String getMessageForEmptyContextField(String clientId){
-        if (isAllClientContextFieldsEmpty(clientId)){
-            return "Por favor, informe o Dia, Hora e Local do evento"
-        } else if (isClientContextFieldDayAndContextFieldHoursEmpty(clientId)){
-            return "Por favor, me informe o dia e a hora do evento"
-        } else if (isClientContextFieldDayAndContextFieldLocationEmpty(clientId)){
-            return "Por favor, me informe o dia e o local do evento"
-        } else if (isClientContextFieldHoursAndContextFieldLocationEmpty(clientId)){
-            return "Por favor, me informe a hora e o local do evento"
+    private String getMessageForEmptyContextField(String clientId) {
+        if (isAllClientContextFieldsEmpty(clientId)) {
+            return 'Por favor, informe o Dia, Hora e Local do evento'
+        } else if (isClientContextFieldDayAndContextFieldHoursEmpty(clientId)) {
+            return 'Por favor, me informe o dia e a hora do evento'
+        } else if (isClientContextFieldDayAndContextFieldLocationEmpty(clientId)) {
+            return 'Por favor, me informe o dia e o local do evento'
+        } else if (isClientContextFieldHoursAndContextFieldLocationEmpty(clientId)) {
+            return 'Por favor, me informe a hora e o local do evento'
         } else if (isClientContextEventDayFieldEmptyOrNull(clientId)) {
-            return "Por favor, me informe o dia do evento"
-        } else if (isClientContextEventHoursFieldEmptyOrNull(clientId)){
-            return "Por favor, me informe a hora do evento"
-        } else if (isClientContextEventLocationFieldNull(clientId)){
-            return "Por favor, me informe o local do evento"
-        } else{
-            return ""
+            return 'Por favor, me informe o dia do evento'
+        } else if (isClientContextEventHoursFieldEmptyOrNull(clientId)) {
+            return 'Por favor, me informe a hora do evento'
         }
+        isClientContextEventLocationFieldNull(clientId) ? 'Por favor, me informe o local do evento' : ''
     }
 
-    private boolean isAllClientContextFieldsEmpty(String clientId){
-        return (isClientContextEventDayFieldEmptyOrNull(clientId)) &&
+    private boolean isAllClientContextFieldsEmpty(String clientId) {
+        (isClientContextEventDayFieldEmptyOrNull(clientId)) &&
                 (isClientContextEventHoursFieldEmptyOrNull(clientId)) &&
                 isClientContextEventLocationFieldNull(clientId)
     }
 
-    private boolean isClientContextFieldDayAndContextFieldHoursEmpty(String clientId){
-        return (isClientContextEventDayFieldEmptyOrNull(clientId)) &&
+    private boolean isClientContextFieldDayAndContextFieldHoursEmpty(String clientId) {
+        (isClientContextEventDayFieldEmptyOrNull(clientId)) &&
                 (isClientContextEventHoursFieldEmptyOrNull(clientId))
     }
 
-    private boolean isClientContextFieldDayAndContextFieldLocationEmpty(String clientId){
-        return (isClientContextEventDayFieldEmptyOrNull(clientId)) &&
+    private boolean isClientContextFieldDayAndContextFieldLocationEmpty(String clientId) {
+        (isClientContextEventDayFieldEmptyOrNull(clientId)) &&
                 isClientContextEventLocationFieldNull(clientId)
     }
 
-    private boolean isClientContextFieldHoursAndContextFieldLocationEmpty(String clientId){
-        return (isClientContextEventHoursFieldEmptyOrNull(clientId)) &&
+    private boolean isClientContextFieldHoursAndContextFieldLocationEmpty(String clientId) {
+        (isClientContextEventHoursFieldEmptyOrNull(clientId)) &&
                 isClientContextEventLocationFieldNull(clientId)
     }
 
-    private static long convertDateTimeToMilliseconds(String eventDay, String eventHours){
-        String eventDateToFormat = eventDay.substring(0,11) << eventHours.substring(11,19)
-        SimpleDateFormat dataModelToFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-        Date EventDateInMilliseconds = dataModelToFormat.parse(eventDateToFormat.toString())
-        return EventDateInMilliseconds.getTime()
-    }
 }

@@ -1,24 +1,21 @@
 package shadow.dialogflow.output
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 import groovy.transform.ToString
 
+@Canonical
 @ToString(includeNames = true)
-
+@CompileDynamic
+@JsonIgnoreProperties(ignoreUnknown = true)
 class DialogOutput {
+
     private String responseId
     private QueryResult queryResult
 
-    DialogOutput(){
-
-    }
-
-    DialogOutput(String responseId, QueryResult queryResult) {
-        this.responseId = responseId
-        this.queryResult = queryResult
-    }
-
     String getResponseId() {
-        return responseId
+        responseId
     }
 
     void setResponseId(String responseId) {
@@ -26,31 +23,31 @@ class DialogOutput {
     }
 
     QueryResult getQueryResult() {
-        return queryResult
+        queryResult
     }
 
     void setQueryResult(QueryResult queryResult) {
         this.queryResult = queryResult
     }
 
-    String getTextOutput(){
-        return this.queryResult.getFulfillmentText()
+    String getTextOutput() {
+        this.queryResult.fulfillmentText
     }
 
-    String getEventDay(){
-        return this.queryResult.getParameters().getDate()
+    String getEventDay() {
+        this.queryResult.parameters.date
     }
 
-    String getEventHours(){
-        return this.queryResult.getParameters().getTime()
+    String getEventHours() {
+        this.queryResult.parameters.time
     }
 
-    String getEventLocation(){
-        return this.queryResult.getParameters().getLocation()
+    String getEventLocation() {
+        this.queryResult.parameters.location
     }
 
-    String getEventLocationData(){
-        return this.queryResult.getParameters().getLocation().getFullLocation()
+    String getEventLocationData() {
+        this.queryResult.parameters.location.fullLocation
     }
 
 }

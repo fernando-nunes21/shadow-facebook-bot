@@ -1,14 +1,16 @@
 package shadow.message
 
-class MessageToFacebook {
-    private String text
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 
-    MessageToFacebook(String text) {
-        this.text = text
-    }
+@Canonical
+@CompileDynamic
+class MessageToFacebook {
+
+    String text
 
     String getText() {
-        return text
+        text
     }
 
 }

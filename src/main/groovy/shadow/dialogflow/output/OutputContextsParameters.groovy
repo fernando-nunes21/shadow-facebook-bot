@@ -2,41 +2,32 @@ package shadow.dialogflow.output
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.Canonical
+import groovy.transform.CompileDynamic
 
+@Canonical
 @JsonIgnoreProperties(ignoreUnknown = true)
+@CompileDynamic
 class OutputContextsParameters {
+
     private String language
 
-    @JsonProperty("language.original")
+    @JsonProperty('language.original')
     private String languageOriginal
 
-    @JsonProperty("language-programming")
+    @JsonProperty('language-programming')
     private String languageProgramming
 
-    @JsonProperty("language-programming.original")
+    @JsonProperty('language-programming.original')
     private String languageProgrammingOriginal
 
-    @JsonProperty("date-time")
+    @JsonProperty('date-time')
     private DateTime dateTime
 
     private String locationEntity
 
-    OutputContextsParameters(){
-
-    }
-
-    OutputContextsParameters(String language, String languageOriginal, String languageProgramming,
-                             String languageProgrammingOriginal, DateTime dateTime, String locationEntity) {
-        this.language = language
-        this.languageOriginal = languageOriginal
-        this.languageProgramming = languageProgramming
-        this.languageProgrammingOriginal = languageProgrammingOriginal
-        this.dateTime = dateTime
-        this.locationEntity = locationEntity
-    }
-
     DateTime getDateTime() {
-        return dateTime
+        dateTime
     }
 
     void setDateTime(DateTime dateTime) {
@@ -44,7 +35,7 @@ class OutputContextsParameters {
     }
 
     String getLocationEntity() {
-        return locationEntity
+        locationEntity
     }
 
     void setLocationEntity(String locationEntity) {
@@ -52,7 +43,7 @@ class OutputContextsParameters {
     }
 
     String getLanguage() {
-        return language
+        language
     }
 
     void setLanguage(String language) {
@@ -60,7 +51,7 @@ class OutputContextsParameters {
     }
 
     String getLanguageOriginal() {
-        return languageOriginal
+        languageOriginal
     }
 
     void setLanguageOriginal(String languageOriginal) {
@@ -68,7 +59,7 @@ class OutputContextsParameters {
     }
 
     String getLanguageProgramming() {
-        return languageProgramming
+        languageProgramming
     }
 
     void setLanguageProgramming(String languageProgramming) {
@@ -76,10 +67,11 @@ class OutputContextsParameters {
     }
 
     String getLanguageProgrammingOriginal() {
-        return languageProgrammingOriginal
+        languageProgrammingOriginal
     }
 
     void setLanguageProgrammingOriginal(String languageProgrammingOriginal) {
         this.languageProgrammingOriginal = languageProgrammingOriginal
     }
+
 }
