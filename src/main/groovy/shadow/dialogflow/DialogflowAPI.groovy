@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import shadow.dialogflow.input.DialogInput
+import shadow.dialogflow.input.QueryInput
+import shadow.dialogflow.input.Text
+
 import java.security.PrivateKey
 import java.sql.Date
 
@@ -23,10 +26,10 @@ class DialogflowAPI {
     private static final Integer ONE_THOUSAND_MULTI = 1000L
 
     @Value('${shadow.dialogflow.credentialsPath}')
-    private String credentialsFilePath
+    String credentialsFilePath
 
     @Value('${shadow.dialogflow.urlApi}')
-    private String urlDialogFlow
+    String urlDialogFlow
 
     private final RestTemplate restTemplate
 
@@ -38,7 +41,7 @@ class DialogflowAPI {
         String url = this.urlDialogFlow << sessionId << ':detectIntent'
         String tokenAuthenticated = getAccessToken()
         String authenticationHeader = 'Bearer ' << tokenAuthenticated
-        DialogInput messageInput = new DialogInput(message)
+        DialogInput messageInput = new DialogInput(queryInput: new QueryInput(text: new Text(text: message)))
         HttpHeaders headers = new HttpHeaders()
         headers.add('Authorization', authenticationHeader)
         headers.add('Content-Type', 'application/json; charset=utf-8')

@@ -17,10 +17,11 @@ import shadow.message.FacebookReceived
 @CompileDynamic
 class ApplicationController {
 
-    @Value('${facebook.verify.url}')
-    private String token
     private final FacebookAdapter facebookAdapter
     private final BotResponse botResponse
+
+    @Value('${facebook.verify.url}')
+    String token
 
     ApplicationController(FacebookAdapter facebookAdapter, BotResponse botResponse) {
         this.facebookAdapter = facebookAdapter
@@ -43,7 +44,6 @@ class ApplicationController {
         new ResponseEntity<>(HttpStatus.OK)
     }
 
-    @Async
     void sendContentToProcessResponse(String clientId, String clientMessage) {
         String response = botResponse.getBotResponse(clientId, clientMessage)
         sendResponseToFacebookAdapter(clientId, response)

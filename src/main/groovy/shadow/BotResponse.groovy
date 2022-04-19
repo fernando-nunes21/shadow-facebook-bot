@@ -23,8 +23,8 @@ class BotResponse {
 
     private final CalendarAPI calendarAPI
     private final DialogflowAPI dialogflowAPI
-    private final Map<String, Map<String, String>> context
     private final ObjectMapper objectMapper
+    Map<String, Map<String, String>> context
 
     BotResponse(CalendarAPI calendarAPI, DialogflowAPI dialogflowAPI, ObjectMapper objectMapper) {
         this.calendarAPI = calendarAPI

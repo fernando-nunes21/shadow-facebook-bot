@@ -13,6 +13,11 @@ class FacebookResponse {
     private Recipient recipient
     private MessageToFacebook message
 
+    FacebookResponse(String clientId, String message){
+        setRecipientId(clientId)
+        setMessageText(message)
+    }
+
     String getMessagingType() {
         messagingType
     }
@@ -35,6 +40,14 @@ class FacebookResponse {
 
     void setMessage(MessageToFacebook message) {
         this.message = message
+    }
+
+    void setMessageText(String message){
+        this.message = new MessageToFacebook(text: message)
+    }
+
+    void setRecipientId(String id){
+        this.recipient = new Recipient(id: id)
     }
 
 }

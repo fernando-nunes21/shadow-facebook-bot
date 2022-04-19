@@ -1,5 +1,6 @@
 package shadow.dialogflow.output
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import groovy.transform.Canonical
 import groovy.transform.CompileDynamic
 import groovy.transform.ToString
@@ -7,6 +8,7 @@ import groovy.transform.ToString
 @Canonical
 @ToString(includeNames = true)
 @CompileDynamic
+@JsonIgnoreProperties(ignoreUnknown = true)
 class DialogOutput {
 
     private String responseId

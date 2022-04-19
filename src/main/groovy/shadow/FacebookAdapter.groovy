@@ -13,10 +13,10 @@ import shadow.message.FacebookResponse
 class FacebookAdapter {
 
     @Value('${facebook.send.url}')
-    private String urlFacebook
+    String urlFacebook
 
     @Value('${facebook.token}')
-    private String tokenFacebook
+    String tokenFacebook
 
     private final RestTemplate restTemplate
 

@@ -7,7 +7,7 @@ import groovy.transform.CompileDynamic
 @CompileDynamic
 class MessageToFacebook {
 
-    private String text
+    String text
 
     String getText() {
         text
